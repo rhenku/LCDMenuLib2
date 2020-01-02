@@ -1,0 +1,136 @@
+##Defines
+
+// display characteristics
+#define _LCDML_DISP_cols  20
+#define _LCDML_DISP_rows  4 
+
+// this value have to be the same as the last menu element
+#define _LCDML_DISP_cnt    17  
+##Objects
+
+LCDML   // object of the LCDMenuLib2 class
+LCDML_0 // object of the first menu element
+##Makros
+
+All Makros start "LCDML_"
+
+// create some global used variables, have to be called under the 
+// creation of the menu and outside of any other functions 
+LCDML_createMenu(_LCDML_DISP_cnt); 
+
+// have to be placed in the main setup function 
+LCDML_setup(_LCDML_DISP_cnt);
+
+// add menu elements to the menu
+// id       = starts with 0 and have to increment with '1' 
+// parent   = at level 0 the parent is "LCDML_0" 
+//            at every other level the parent is the name of the level before + 
+//            the child number _1, _2, ...
+// child    = 1,2,3 is the number of a child (starts with 1)
+// content  = is the displayed name of a menu element, can be set to "" when it is dynamic
+// callback = is the menu function which is called when the element is activ
+//            can be set to NULL if no menu function exists 
+LCDML_add(id, parent, child, content, callback);
+
+// add a advanced menu element
+// id, parent, child, content have the same functionality to LCDML_add
+// callback = depending on settings: 
+//            settings = _LCDML_TYPE_default => it is a normal menu function
+//            settings = _LCDML_TYPE_dynParam => it is a dynContent function
+// param    = is a number (0-255) which is a parameter of every menu function 
+// condetion= is a function with a "boolean" return value
+//              
+LCDML_addAdvanced(id, parent, child, condetion, content, callback, param, settings);
+
+// get the menu element name and copy the name in the "var" variable 
+// var = is a string with _LCDML_DISP_cols characters
+// id  = is the id of menu element
+LCDML_getContent(var, id);
+##LCDMenuLib methods
+
+All methods can be called with "LCDML."
+
+// constructor
+LCDMenuLib2(LCDMenuLib2_menu &p_r ,const uint8_t p_rows, const uint8_t p_cols, LCDML_FuncPtr contentUpdate, LCDML_FuncPtr contentClear, LCDML_FuncPtr menuControl);
+              
+// public methods
+LCDML.loop();
+LCDML.loop_menu();
+LCDML.loop_control();
+
+ // Menu           
+LCDML.MENU_getObj();                      // return an object LCDMenuLib2_menu * 
+LCDML.MENU_display(uint8_t update=0);     // no return / 0 => no display update, 1 = display update   
+LCDML.MENU_goRoot();                      // no return
+LCDML.MENU_enRollover();                  // no return
+LCDML.MENU_disRollover();                 // no return
+LCDML.MENU_getLayer();                    // return uint8_t                  
+LCDML.MENU_getCursorPos();                // return uint8_t 
+LCDML.MENU_getCursorPosAbs();             // return uint8_t
+LCDML.MENU_getChilds();                   // return uint8_t
+LCDML.MENU_getParentId();                 // return uint8_t
+LCDML.MENU_getParentId(uint8_t p_layer);  // return uint8_t
+LCDML.MENU_getScroll();                   // return uint8_t
+
+// BT = Button
+// is called once only
+LCDML.BT_setup();           // return boolean /
+     
+LCDML.BT_enter();           // no return   
+LCDML.BT_up();        
+LCDML.BT_down();      
+LCDML.BT_left();      
+LCDML.BT_right();     
+LCDML.BT_quit();  
+   
+LCDML.BT_resetAll();       // no return
+LCDML.BT_resetEnter();
+LCDML.BT_resetUp();   
+LCDML.BT_resetDown(); 
+LCDML.BT_resetLeft(); 
+LCDML.BT_resetRight();
+LCDML.BT_resetQuit();
+
+LCDML.BT_checkAny();      // return boolean
+LCDML.BT_checkEnter();
+LCDML.BT_checkUp();                      
+LCDML.BT_checkDown();                    
+LCDML.BT_checkLeft();                    
+LCDML.BT_checkRight(); 
+LCDML.BT_checkQuit();                  
+
+// Display              
+LCDML.DISP_menuUpdate();                 
+LCDML.DISP_clear();                      
+LCDML.DISP_checkMenuUpdate();           // return boolean          
+LCDML.DISP_checkMenuCursorUpdate();     // return boolean      
+LCDML.DISP_getMenuContentId(uint8_t n);  // return uint8_t
+           
+// Menu function
+LCDML.FUNC_setup();                           // return boolean                     
+LCDML.FUNC_loop();                         // return boolean
+LCDML.FUNC_close();                         // return boolean
+LCDML.FUNC_goBackToMenu(uint8_t e=0);   // no return / e=0 close function, e=1 close function and go a layer back    
+LCDML.FUNC_getID();                      // return uint8_t                                  
+LCDML.FUNC_setLoopInterval(unsigned long t); // no return
+LCDML.FUNC_disableScreensaver();             // no return
+  
+// Timmer
+LCDML.TIMER_ms(unsigned long &var, unsigned long t);  // return boolean
+LCDML.TIMER_msReset(unsigned long &var);              // no return
+LCDML.TIMER_us(unsigned long &var, unsigned long t);  // retun boolean
+LCDML.TIMER_usReset(unsigned long &var);              // no return
+
+// Other
+LCDML.OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search);                 // return boolean (true when an element is found) 
+LCDML.OTHER_jumpToFunc(LCDML_FuncPtr_pu8 p_search, uint8_t para);   // return boolean (true when an element is found)            
+LCDML.OTHER_jumpToID(uint8_t p_search);                             // return boolean (true when an element is found) 
+LCDML.OTHER_jumpToID(uint8_t p_search, uint8_t para=0);             // return boolean (true when an element is found)
+LCDML.OTHER_setCursorToID(uint8_t p_search);                        // return boolean (true when an element is found) 
+LCDML.OTHER_setCursorToFunc(LCDML_FuncPtr_pu8 p_search);            // return boolean (true when an element is found)     
+
+// Screensaver
+LCDML.SCREEN_enable(LCDML_FuncPtr_pu8 function, unsigned long t); // no return 
+LCDML.SCREEN_disable();                                           // no return
+LCDML.SCREEN_resetTimer();                                        // no return
+LCDML.SCREEN_start();                                             // no return
